@@ -3,17 +3,19 @@ import type { NextRequest } from 'next/server'
 
 const TARGET_URL = 'https://sistemas-jundiai.lovable.app'
 
-// Rotas que NÃO devem ser proxiadas (rotas locais)
+// Rotas que NÃO devem ser proxiadas (rotas locais do Next.js)
 const LOCAL_ROUTES = [
-  '/',
   '/robots.txt',
   '/sitemap.xml',
-  '/sobre',
-  '/servicos',
-  '/contato',
-  '/faq',
-  '/blog',
+  '/manifest.json',
 ]
+
+// Obtém a URL base do domínio atual
+function getBaseUrl(request: NextRequest): string {
+  const host = request.headers.get('host') || 'localhost:3000'
+  const protocol = host.includes('localhost') ? 'http' : 'https'
+  return `${protocol}://${host}`
+}
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
@@ -123,13 +125,55 @@ export async function middleware(request: NextRequest) {
 
     const contentType = response.headers.get('content-type') || ''
     
-    // Se for HTML, reescrever URLs
+    // Se for HTML, reescrever URLs e remover badge Lovable
     if (contentType.includes('text/html')) {
       let html = await response.text()
       
-      // Reescrever todas as referências ao domínio original
+      // Obter URL base do domínio atual
+      const baseUrl = getBaseUrl(request)
+      
+      // Reescrever todas as referências ao domínio original para o novo domínio
       html = html.replace(
         /https?:\/\/sistemas-jundiai\.lovable\.app/g,
+        baseUrl
+      )
+      
+      // Remover badge "Edit with Lovable" (pode estar em diferentes formatos)
+      // Remove o elemento completo do Lovable badge
+      html = html.replace(
+        /<div[^>]*id="lovable-badge"[^>]*>[\s\S]*?<\/div>/gi,
+        ''
+      )
+      html = html.replace(
+        /<a[^>]*href="[^"]*lovable\.dev[^"]*"[^>]*>[\s\S]*?<\/a>/gi,
+        ''
+      )
+      html = html.replace(
+        /<[^>]*class="[^"]*lovable[^"]*"[^>]*>[\s\S]*?<\/[^>]+>/gi,
+        ''
+      )
+      // Remove qualquer elemento que contenha "Edit with Lovable"
+      html = html.replace(
+        /<aside[^>]*>[\s\S]*?Edit with Lovable[\s\S]*?<\/aside>/gi,
+        ''
+      )
+      html = html.replace(
+        /<div[^>]*>[\s\S]*?Edit with Lovable[\s\S]*?<\/div>/gi,
+        ''
+      )
+      // Remove scripts do Lovable
+      html = html.replace(
+        /<script[^>]*src="[^"]*lovable[^"]*"[^>]*>[\s\S]*?<\/script>/gi,
+        ''
+      )
+      // Remove o badge inline que geralmente fica no canto
+      html = html.replace(
+        /<!-- Lovable Badge -->[\s\S]*?<!-- End Lovable Badge -->/gi,
+        ''
+      )
+      // Remove qualquer link para lovable.dev
+      html = html.replace(
+        /<a[^>]*lovable\.dev[^>]*>[^<]*<\/a>/gi,
         ''
       )
       
@@ -142,10 +186,25 @@ export async function middleware(request: NextRequest) {
     // Se for CSS, reescrever URLs
     if (contentType.includes('text/css')) {
       let css = await response.text()
+      const baseUrl = getBaseUrl(request)
       css = css.replace(
         /https?:\/\/sistemas-jundiai\.lovable\.app/g,
-        ''
+        baseUrl
       )
+      // Ocultar badge via CSS
+      css += `
+        [class*="lovable"], 
+        [id*="lovable"], 
+        a[href*="lovable.dev"],
+        aside:has(a[href*="lovable"]) {
+          display: none !important;
+          visibility: hidden !important;
+          opacity: 0 !important;
+          pointer-events: none !important;
+          position: absolute !important;
+          left: -9999px !important;
+        }
+      `
       return new NextResponse(css, {
         status: response.status,
         headers: responseHeaders,
@@ -155,9 +214,10 @@ export async function middleware(request: NextRequest) {
     // Se for JavaScript, reescrever URLs
     if (contentType.includes('javascript')) {
       let js = await response.text()
+      const baseUrl = getBaseUrl(request)
       js = js.replace(
         /https?:\/\/sistemas-jundiai\.lovable\.app/g,
-        ''
+        baseUrl
       )
       return new NextResponse(js, {
         status: response.status,
