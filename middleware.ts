@@ -177,6 +177,40 @@ export async function middleware(request: NextRequest) {
         ''
       )
       
+      // Substituir telefone e WhatsApp
+      html = html.replace(
+        /\+?55\s*\(?\d{2}\)?\s*\d{4,5}[-.\s]?\d{4}/g,
+        '+55 11 98938-7263'
+      )
+      html = html.replace(
+        /wa\.me\/\d+/g,
+        'wa.me/5511989387263'
+      )
+      html = html.replace(
+        /whatsapp\.com\/send\?phone=\d+/g,
+        'whatsapp.com/send?phone=5511989387263'
+      )
+      
+      // Substituir email
+      html = html.replace(
+        /[\w.-]+@[\w.-]+\.\w+/g,
+        'Ohany@korenexus.com.br'
+      )
+      
+      // Adicionar CSS para ocultar badge
+      const hideBadgeCSS = `<style>
+        [class*="lovable"], [id*="lovable"], a[href*="lovable.dev"],
+        aside:has(a[href*="lovable"]) {
+          display: none !important;
+          visibility: hidden !important;
+          opacity: 0 !important;
+          pointer-events: none !important;
+          position: absolute !important;
+          left: -9999px !important;
+        }
+      </style>`
+      html = html.replace('</head>', `${hideBadgeCSS}</head>`)
+      
       return new NextResponse(html, {
         status: response.status,
         headers: responseHeaders,

@@ -9,7 +9,7 @@ function getBaseUrl(request: NextRequest): string {
   return `${protocol}://${host}`
 }
 
-// Remove o badge da Lovable do HTML
+// Remove o badge da Lovable do HTML e substitui contatos
 function removeLovableBadge(html: string): string {
   // Remove o elemento completo do Lovable badge
   html = html.replace(
@@ -47,6 +47,26 @@ function removeLovableBadge(html: string): string {
   html = html.replace(
     /<a[^>]*lovable\.dev[^>]*>[^<]*<\/a>/gi,
     ''
+  )
+  
+  // Substituir telefone e WhatsApp
+  html = html.replace(
+    /\+?55\s*\(?\d{2}\)?\s*\d{4,5}[-.\s]?\d{4}/g,
+    '+55 11 98938-7263'
+  )
+  html = html.replace(
+    /wa\.me\/\d+/g,
+    'wa.me/5511989387263'
+  )
+  html = html.replace(
+    /whatsapp\.com\/send\?phone=\d+/g,
+    'whatsapp.com/send?phone=5511989387263'
+  )
+  
+  // Substituir email
+  html = html.replace(
+    /[\w.-]+@[\w.-]+\.\w+/g,
+    'Ohany@korenexus.com.br'
   )
   
   // Adiciona CSS para ocultar qualquer badge remanescente

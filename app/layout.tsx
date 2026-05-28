@@ -7,16 +7,16 @@ import './globals.css'
 const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://sistemas-jundiai.lovable.app'
-const SITE_NAME = 'Sistemas Jundiaí'
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://korenexus.com.br'
+const SITE_NAME = 'KoreNexus'
 
 export const metadata: Metadata = {
   title: {
     default: SITE_NAME,
     template: `%s | ${SITE_NAME}`,
   },
-  description: 'Sistemas e soluções tecnológicas para Jundiaí e região. Desenvolvimento de software, aplicativos e sistemas web personalizados.',
-  keywords: ['sistemas', 'jundiaí', 'tecnologia', 'software', 'desenvolvimento', 'aplicativos', 'web'],
+  description: 'KoreNexus - Desenvolvimento de Software Sob Medida. Soluções tecnológicas personalizadas para sua empresa.',
+  keywords: ['desenvolvimento de software', 'software sob medida', 'tecnologia', 'sistemas', 'aplicativos', 'web', 'KoreNexus'],
   authors: [{ name: SITE_NAME }],
   creator: SITE_NAME,
   publisher: SITE_NAME,
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: SITE_NAME,
-    description: 'Sistemas e soluções tecnológicas para Jundiaí e região.',
+    description: 'KoreNexus - Desenvolvimento de Software Sob Medida.',
     url: BASE_URL,
     siteName: SITE_NAME,
     locale: 'pt_BR',
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: SITE_NAME,
-    description: 'Sistemas e soluções tecnológicas para Jundiaí e região.',
+    description: 'KoreNexus - Desenvolvimento de Software Sob Medida.',
     images: ['/og-image.png'],
   },
   robots: {
@@ -87,8 +87,8 @@ export const viewport: Viewport = {
   maximumScale: 5,
   userScalable: true,
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#000000' },
+    { media: '(prefers-color-scheme: light)', color: '#8B5CF6' },
+    { media: '(prefers-color-scheme: dark)', color: '#6B21A8' },
   ],
 }
 
@@ -105,21 +105,17 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         
         {/* DNS Prefetch para recursos que serão usados */}
-        <link rel="dns-prefetch" href="https://sistemas-jundiai.lovable.app" />
+        <link rel="dns-prefetch" href="https://korenexus.com.br" />
         
         {/* Structured Data - Organization */}
         <OrganizationSchema
           name={SITE_NAME}
-          description="Sistemas e soluções tecnológicas para Jundiaí e região."
+          description="KoreNexus - Desenvolvimento de Software Sob Medida."
           url={BASE_URL}
           logo={`${BASE_URL}/logo.png`}
-          sameAs={[
-            // Adicione suas redes sociais aqui
-            // 'https://facebook.com/sistemasjundiai',
-            // 'https://instagram.com/sistemasjundiai',
-          ]}
+          sameAs={[]}
           contactPoint={{
-            telephone: '+55-11-99999-9999',
+            telephone: '+55-11-98938-7263',
             contactType: 'customer service',
             areaServed: 'BR',
             availableLanguage: ['Portuguese'],
@@ -129,7 +125,7 @@ export default function RootLayout({
         {/* Structured Data - WebSite */}
         <WebSiteSchema
           name={SITE_NAME}
-          description="Sistemas e soluções tecnológicas para Jundiaí e região."
+          description="KoreNexus - Desenvolvimento de Software Sob Medida."
           url={BASE_URL}
           potentialAction={{
             target: `${BASE_URL}/busca?q={search_term_string}`,
