@@ -3,6 +3,18 @@ import type { NextRequest } from 'next/server'
 
 const TARGET_URL = 'https://sistemas-jundiai.lovable.app'
 
+// Rotas que NÃO devem ser proxiadas (rotas locais)
+const LOCAL_ROUTES = [
+  '/',
+  '/robots.txt',
+  '/sitemap.xml',
+  '/sobre',
+  '/servicos',
+  '/contato',
+  '/faq',
+  '/blog',
+]
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
@@ -13,6 +25,16 @@ export async function middleware(request: NextRequest) {
 
   // Ignorar _next (assets do Next.js)
   if (pathname.startsWith('/_next')) {
+    return NextResponse.next()
+  }
+
+  // Ignorar rotas locais (SEO, páginas do site)
+  if (LOCAL_ROUTES.includes(pathname)) {
+    return NextResponse.next()
+  }
+
+  // Ignorar arquivos estáticos locais
+  if (pathname.match(/\.(ico|png|jpg|jpeg|gif|svg|webp|woff|woff2|ttf|eot)$/)) {
     return NextResponse.next()
   }
 
